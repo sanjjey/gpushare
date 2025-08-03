@@ -321,8 +321,10 @@ const GPUMarketplaceBrowse = () => {
   };
 
   const handleCompare = () => {
-    console.log('Compare GPUs:', comparedGPUs);
-    // Navigate to comparison page or show comparison modal
+    if (comparedGPUs?.length >= 2) {
+      // The comparison functionality is now handled by the ComparisonBar component
+      console.log('Comparison functionality activated');
+    }
   };
 
   const handleClearComparison = () => {
@@ -330,7 +332,23 @@ const GPUMarketplaceBrowse = () => {
   };
 
   const handleNavigation = (navData) => {
-    console.log('Navigation:', navData);
+    if (navData?.path) {
+      navigate(navData?.path);
+    } else if (navData?.action === 'logout') {
+      localStorage.removeItem('user');
+      setUser(null);
+      navigate('/user-registration-login');
+    } else if (navData?.action === 'profile') {
+      navigate('/user-profile-account-settings');
+    } else if (navData?.action === 'dashboard') {
+      // Navigate to appropriate dashboard based on user role
+      const userRole = user?.role || 'renter';
+      if (userRole === 'provider') {
+        navigate('/gpu-provider-dashboard');
+      } else {
+        navigate('/gpu-renter-dashboard');
+      }
+    }
   };
 
   const filteredGPUs = gpus?.filter(gpu => {
@@ -526,7 +544,14 @@ const GPUMarketplaceBrowse = () => {
             {/* Load More Button */}
             {!isLoading && sortedGPUs?.length > 0 && sortedGPUs?.length >= 6 && (
               <div className="text-center mt-8">
-                <Button variant="outline" size="lg">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => {
+                    // Simulate loading more GPUs
+                    alert('Loading more GPUs... (This would fetch additional results in a real implementation)');
+                  }}
+                >
                   Load More GPUs
                 </Button>
               </div>
